@@ -9,7 +9,7 @@ export interface ImageFile {
 export interface BatchItem {
   id: string;
   name: string;
-  images: ImageFile[];
+  images: (ImageFile | null)[];
   status: 'idle' | 'processing' | 'completed' | 'error' | 'stopping';
   processingMode?: 'normal' | 'pro';
   resultsNormal: string[];

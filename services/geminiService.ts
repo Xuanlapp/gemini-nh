@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { ImageFile } from "../types";
 
 export const generatePodImage = async (
-  images: ImageFile[], 
+  images: (ImageFile | null)[], 
   customPrompt?: string, 
   sourceImageBase64?: string,
   isPro: boolean = true
@@ -23,7 +23,10 @@ export const generatePodImage = async (
       },
     });
   } else {
-    parts = images.map(img => ({
+    // Lọc bỏ các slot không có ảnh
+    const validImages = images.filter((img): img is ImageFile => !!img);
+    
+    parts = validImages.map(img => ({
       inlineData: {
         data: img.base64.split(',')[1],
         mimeType: img.file.type || 'image/png',
@@ -49,7 +52,6 @@ export const generatePodImage = async (
     : (customPrompt || defaultPrompt);
 
   try {
-    // Chỉ thêm imageSize nếu là model Pro (gemini-3-pro-image-preview)
     const imageConfig: any = {
       aspectRatio: "1:1"
     };
